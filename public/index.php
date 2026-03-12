@@ -46,7 +46,7 @@ $router->post('/login', [AuthController::class, 'login']);
 
 $router->get('/dashboard', [DashboardController::class, 'index'], ['auth']);
 
-$router->post('/logout', [AuthController::class, 'logout'], ['auth']);
+$router->get('/logout', [AuthController::class, 'logout']);
 
 $router->get('/admin', [AdminController::class, 'index'], ['auth', 'admin']);
 
