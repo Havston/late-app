@@ -1,0 +1,17 @@
+.env
+
+/vendor/
+/node_modules/
+
+storage/
+logs/
+cache/
+
+.DS_Store
+.idea
+.vscode
+
+*.log
+
+public/uploads/
+public/videos/

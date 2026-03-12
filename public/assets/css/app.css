@@ -1,0 +1,314 @@
+/* ===== BASE ===== */
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f5f6fa;
+}
+
+
+
+/* ===== LAYOUT ===== */
+
+.layout{
+    display:flex;
+}
+
+.sidebar{
+    width:220px;
+    background:#1f2937;
+    color:white;
+    min-height:100vh;
+    padding:20px;
+}
+
+.sidebar h2{
+    margin-top:0;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:10px;
+    border-radius:6px;
+    margin-bottom:6px;
+}
+
+.sidebar a:hover{
+    background:#374151;
+}
+
+.main{
+    flex:1;
+}
+
+.header{
+    background:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.content{
+    padding:30px;
+}
+
+
+
+/* ===== CARDS ===== */
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom:20px;
+}
+
+
+
+/* ===== FORMS ===== */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.form-grid > div{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-grid input{
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+.form-full{
+    grid-column:1 / -1;
+}
+
+
+
+/* ===== BUTTON SYSTEM ===== */
+
+.btn{
+    padding:12px 18px;
+    border-radius:6px;
+    border:none;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* primary */
+
+.btn-primary{
+    background:#3b82f6;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#2563eb;
+}
+
+/* reset */
+
+.btn-reset{
+    background:#e5e7eb;
+    color:#111827;
+}
+
+.btn-reset:hover{
+    background:#d1d5db;
+}
+
+/* delete */
+
+.btn-danger{
+    background:#ef4444;
+    color:white;
+}
+
+.btn-danger:hover{
+    background:#dc2626;
+}
+
+/* edit */
+
+.btn-warning{
+    background:#facc15;
+    color:black;
+}
+
+.btn-warning:hover{
+    background:#eab308;
+}
+
+.btn-sm{
+    padding:6px 8px;
+    font-size:13px;
+    font-weight:normal;
+}
+
+
+/* ===== TABLE ===== */
+
+.table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.table th,
+.table td{
+    padding:10px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+}
+
+.table th{
+    background:#f1f5f9;
+}
+
+
+
+/* ===== ACTIONS ===== */
+
+.actions{
+    display:flex;
+    gap:8px;
+}
+
+
+.actions .btn{
+    padding:6px 10px;
+    font-weight:normal;
+}
+
+.actions form{
+    margin:0;
+}
+
+/* ===== SEARCH ===== */
+
+.search-box{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.search-box input{
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    width:250px;
+}
+
+/* ===== CAMERA PAGE ===== */
+
+.camera-wrapper{
+    max-width:700px;
+    margin:auto;
+}
+
+.camera-card{
+    text-align:center;
+}
+
+#video{
+    width:100%;
+    max-width:500px;
+    border-radius:10px;
+    margin:20px 0;
+    background:black;
+}
+
+.camera-controls{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.camera-status{
+    color:#555;
+}
+
+.confirm-card{
+    text-align:center;
+    margin-top:20px;
+}
+
+#confirmBox{
+    display:none;
+}
+
+#nameInput{
+    width:100%;
+    max-width:300px;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    margin:10px 0;
+}
+
+.confirm-buttons{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+}
+
+/* ===== LOGIN PAGE ===== */
+
+.login-wrapper{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.login-card{
+    width:320px;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.08);
+}
+
+.login-card h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.login-field{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:15px;
+}
+
+.login-field input{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+.login-btn{
+    width:100%;
+}
+
+.login-error{
+    color:#ef4444;
+    font-size:14px;
+    margin-bottom:15px;
+    text-align:center;
+}

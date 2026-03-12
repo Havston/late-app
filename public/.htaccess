@@ -1,0 +1,17 @@
+RewriteEngine On
+
+# запрет доступа к .env
+<Files ".env">
+    Require all denied
+</Files>
+
+# запрет доступа к логам
+RewriteRule ^storage/ - [F,L]
+
+# если файл существует — отдаём его
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# иначе отправляем в index.php
+RewriteRule ^ index.php [QSA,L]
