@@ -76,4 +76,60 @@ class AuthController
         header("Location: /");
         exit;
     }
+
+    public function changePassword()
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+
+    $userId = $_SESSION['user']['id'];
+
+    $old = $_POST['old_password'] ?? '';
+    $new = $_POST['new_password'] ?? '';
+    $repeat = $_POST['repeat_password'] ?? '';
+
+    if (!$old || !$new || !$repeat) {
+        die("Заполните все поля");
+    }
+
+    if ($new !== $repeat) {
+        die("Пароли не совпадают");
+    }
+
+    $db = Database::get();
+
+    $stmt = $db->prepare("SELECT password FROM users WHERE id = ?");
+    $stmt->execute([$userId]);
+
+    $user = $stmt->fetch();
+
+    if (!$user) {
+        die("Пользователь не найден");
+    }
+
+    if (!password_verify($old, $user['password'])) {
+        die("Старый пароль неверный");
+    }
+
+    $hash = password_hash($new, PASSWORD_DEFAULT);
+
+    $stmt = $db->prepare("UPDATE users SET password = ? WHERE id = ?");
+    $stmt->execute([$hash, $userId]);
+
+    echo "Пароль изменён";
+}
+
+public function profile()
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+
+    $user = $_SESSION['user'];
+
+    View::render('profile', [
+        'user' => $user
+    ]);
+}
 }

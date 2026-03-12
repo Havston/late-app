@@ -312,3 +312,39 @@ body{
     margin-bottom:15px;
     text-align:center;
 }
+
+/* ===== SIDEBAR FORM ===== */
+
+.sidebar form {
+    margin-top:10px;
+}
+
+.sidebar form button {
+    width:100%;
+}
+
+/* ===== PROFILE ===== */
+
+.profile-card{
+    max-width:500px;
+}
+
+.profile-field{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:15px;
+}
+
+.profile-field input{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+.profile-form{
+    margin-top:20px;
+}
+
+.profile-form button{
+    margin-top:10px;
+}

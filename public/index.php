@@ -46,7 +46,7 @@ $router->post('/login', [AuthController::class, 'login']);
 
 $router->get('/dashboard', [DashboardController::class, 'index'], ['auth']);
 
-$router->get('/logout', [AuthController::class, 'logout']);
+$router->post('/logout', [AuthController::class, 'logout'], ['auth']);
 
 $router->get('/admin', [AdminController::class, 'index'], ['auth', 'admin']);
 
@@ -62,5 +62,8 @@ $router->post('/late/update', [LateController::class, 'update'], ['auth']);
 $router->post('/late/delete', [LateController::class, 'delete'], ['auth']);
 
 $router->get('/reports', [ReportsController::class, 'index'], ['auth']);
+
+$router->get('/profile', [AuthController::class, 'profile'], ['auth']);
+$router->post('/profile/password', [AuthController::class, 'changePassword'], ['auth']);
 
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
