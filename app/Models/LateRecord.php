@@ -170,4 +170,26 @@ class LateRecord
 
         return $stats;
     }
+
+    public function getByIds($ids, $schoolId)
+    {
+    if (empty($ids)) return [];
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+    $sql = "
+        SELECT *
+        FROM late_records
+        WHERE school_id = ?
+        AND id IN ($placeholders)
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $params = array_merge([$schoolId], $ids);
+
+    $stmt->execute($params);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

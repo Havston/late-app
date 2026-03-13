@@ -208,6 +208,28 @@ class LateController
         ''
     );
 
+    View::render('late_export', [
+        'records' => $records
+    ]);
+    }
+
+    public function exportDownload()
+    {
+    $this->requireAuth();
+    $this->checkCsrf();
+
+    if (empty($_POST['ids'])) {
+        die("Ничего не выбрано");
+    }
+
+    $ids = $_POST['ids'];
+
+    $model = new LateRecord();
+
+    $schoolId = (int)$_SESSION['user']['school_id'];
+
+    $records = $model->getByIds($ids, $schoolId);
+
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename=late.csv');
 

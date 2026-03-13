@@ -69,4 +69,7 @@ $router->get('/reports', [ReportsController::class, 'index'], ['auth']);
 $router->get('/profile', [AuthController::class, 'profile'], ['auth']);
 $router->post('/profile/password', [AuthController::class, 'changePassword'], ['auth']);
 
+$router->get('/late/export', [LateController::class, 'export'], ['auth']);
+$router->post('/late/exportDownload', [LateController::class, 'exportDownload'], ['auth']);
+
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
