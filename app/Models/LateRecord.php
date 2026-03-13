@@ -10,15 +10,11 @@ class LateRecord
     }
 
 
-    /* ======================
-       CREATE
-    ====================== */
-
     public function create($schoolId, $name, $text, $date)
     {
         $stmt = $this->db->prepare("
             INSERT INTO late_records
-            (school_id, student_name, text, created_at)
+            (school_id, student_name, text, late_date)
             VALUES (?, ?, ?, ?)
         ");
 
@@ -31,14 +27,8 @@ class LateRecord
     }
 
 
-    /* ======================
-       GET BY SCHOOL
-    ====================== */
-
     public function getBySchool($schoolId, $search = '')
     {
-        $schoolId = (int)$schoolId;
-
         if ($search !== '') {
 
             $stmt = $this->db->prepare("
@@ -51,7 +41,7 @@ class LateRecord
             ");
 
             $stmt->execute([
-                $schoolId,
+                (int)$schoolId,
                 '%' . $search . '%'
             ]);
 
@@ -65,16 +55,12 @@ class LateRecord
                 LIMIT 500
             ");
 
-            $stmt->execute([$schoolId]);
+            $stmt->execute([(int)$schoolId]);
         }
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    /* ======================
-       GET BY ID
-    ====================== */
 
     public function getById($id, $schoolId)
     {
@@ -95,10 +81,6 @@ class LateRecord
     }
 
 
-    /* ======================
-       DELETE
-    ====================== */
-
     public function delete($id, $schoolId)
     {
         $stmt = $this->db->prepare("
@@ -114,10 +96,6 @@ class LateRecord
     }
 
 
-    /* ======================
-       UPDATE
-    ====================== */
-
     public function update($id, $name, $text, $date, $schoolId)
     {
         $stmt = $this->db->prepare("
@@ -125,7 +103,7 @@ class LateRecord
             SET
                 student_name = ?,
                 text = ?,
-                created_at = ?
+                late_date = ?
             WHERE id = ?
             AND school_id = ?
         ");
@@ -140,17 +118,13 @@ class LateRecord
     }
 
 
-    /* ======================
-       COUNT TODAY
-    ====================== */
-
     public function countToday($schoolId)
     {
         $stmt = $this->db->prepare("
             SELECT COUNT(*)
             FROM late_records
             WHERE school_id = ?
-            AND DATE(created_at) = CURDATE()
+            AND late_date = CURDATE()
         ");
 
         $stmt->execute([(int)$schoolId]);
@@ -159,45 +133,28 @@ class LateRecord
     }
 
 
-    /* ======================
-       STATS
-    ====================== */
-
     public function getStats($schoolId)
     {
-        $schoolId = (int)$schoolId;
-
         $stats = [];
-
-
-        // всего
 
         $stmt = $this->db->prepare("
             SELECT COUNT(*)
             FROM late_records
             WHERE school_id = ?
         ");
-
-        $stmt->execute([$schoolId]);
-
+        $stmt->execute([(int)$schoolId]);
         $stats['total'] = (int)$stmt->fetchColumn();
 
 
-        // сегодня
-
         $stmt = $this->db->prepare("
             SELECT COUNT(*)
             FROM late_records
             WHERE school_id = ?
-            AND DATE(created_at) = CURDATE()
+            AND late_date = CURDATE()
         ");
-
-        $stmt->execute([$schoolId]);
-
+        $stmt->execute([(int)$schoolId]);
         $stats['today'] = (int)$stmt->fetchColumn();
 
-
-        // топ учеников
 
         $stmt = $this->db->prepare("
             SELECT student_name, COUNT(*) as count
@@ -207,13 +164,10 @@ class LateRecord
             ORDER BY count DESC
             LIMIT 5
         ");
-
-        $stmt->execute([$schoolId]);
+        $stmt->execute([(int)$schoolId]);
 
         $stats['top_students'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
         return $stats;
     }
-
 }

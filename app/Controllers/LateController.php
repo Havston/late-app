@@ -17,6 +17,17 @@ class LateController
         }
     }
 
+    private function extractName($text)
+    {
+        $words = explode(" ", trim($text));
+
+        $first = $words[0] ?? '';
+        $second = $words[1] ?? '';
+
+        return trim($first . " " . $second);
+    }
+
+
     public function index()
     {
         $this->requireAuth();
@@ -40,64 +51,65 @@ class LateController
     public function register()
     {
         $this->requireAuth();
-
         View::render('register');
     }
 
 
     public function create()
     {
-    $this->requireAuth();
-    $this->checkCsrf();
+        $this->requireAuth();
+        $this->checkCsrf();
 
-    $studentName = trim($_POST['student_name'] ?? '');
-    $text = trim($_POST['text'] ?? '');
-    $date = $_POST['late_date'] ?? date('Y-m-d');
+        $text = trim($_POST['text'] ?? '');
+        $date = $_POST['late_date'] ?? date('Y-m-d');
 
-    if (!$studentName) {
-        echo "Введите имя";
-        return;
-    }
+        if (!$text) {
+            echo "Введите текст";
+            return;
+        }
 
-    $model = new LateRecord();
+        $studentName = $this->extractName($text);
 
-    $model->create(
-        (int)$_SESSION['user']['school_id'],
-        $studentName,
-        $text,
-        $date
-    );
+        $model = new LateRecord();
 
-    header("Location: /late");
-    exit;
+        $model->create(
+            (int)$_SESSION['user']['school_id'],
+            $studentName,
+            $text,
+            $date
+        );
+
+        header("Location: /late");
+        exit;
     }
 
 
     public function autoStore()
     {
-    $this->requireAuth();
+        $this->requireAuth();
 
-    $data = json_decode(file_get_contents("php://input"), true);
+        $data = json_decode(file_get_contents("php://input"), true);
 
-    $studentName = substr(trim($data['student_name'] ?? ''), 0, 255);
-    $text = substr(trim($data['text'] ?? ''), 0, 500);
+        $text = substr(trim($data['text'] ?? ''), 0, 500);
 
-    if (!$studentName) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Имя не указано']);
-        return;
-    }
+        if (!$text) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Нет текста']);
+            return;
+        }
 
-    $model = new LateRecord();
+        $studentName = $this->extractName($text);
 
-    $model->create(
-        (int)$_SESSION['user']['school_id'],
-        $studentName,
-        $text,
-        date('Y-m-d')
-    );
+        $model = new LateRecord();
 
-    echo json_encode(['success' => true]);
+        $model->create(
+            (int)$_SESSION['user']['school_id'],
+            $studentName,
+            $text,
+            date('Y-m-d')
+        );
+
+        echo json_encode(['success' => true]);
     }
 
 
@@ -161,26 +173,59 @@ class LateController
 
     public function update()
     {
+        $this->requireAuth();
+        $this->checkCsrf();
+
+        $id = (int)($_POST['id'] ?? 0);
+
+        $text = trim($_POST['text'] ?? '');
+        $date = $_POST['late_date'] ?? date('Y-m-d');
+
+        $studentName = $this->extractName($text);
+
+        $model = new LateRecord();
+
+        $model->update(
+            $id,
+            $studentName,
+            $text,
+            $date,
+            (int)$_SESSION['user']['school_id']
+        );
+
+        header("Location: /late");
+        exit;
+    }
+
+    public function export()
+    {
     $this->requireAuth();
-    $this->checkCsrf();
-
-    $id = (int)($_POST['id'] ?? 0);
-
-    $studentName = trim($_POST['student_name'] ?? '');
-    $text = trim($_POST['text'] ?? '');
-    $date = $_POST['late_date'] ?? date('Y-m-d');
 
     $model = new LateRecord();
 
-    $model->update(
-        $id,
-        $studentName,
-        $text,
-        $date,
-        (int)$_SESSION['user']['school_id']
+    $records = $model->getBySchool(
+        (int)$_SESSION['user']['school_id'],
+        ''
     );
 
-    header("Location: /late");
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename=late.csv');
+
+    $f = fopen('php://output', 'w');
+
+    fputcsv($f, ['date', 'name', 'text']);
+
+    foreach ($records as $r) {
+
+        fputcsv($f, [
+            $r['late_date'],
+            $r['student_name'],
+            $r['text']
+        ]);
+
+    }
+
+    fclose($f);
     exit;
     }
 }
