@@ -47,73 +47,57 @@ class LateController
 
     public function create()
     {
-        $this->requireAuth();
-        $this->checkCsrf();
+    $this->requireAuth();
+    $this->checkCsrf();
 
-        $studentName = substr(trim($_POST['student_name'] ?? ''), 0, 255);
-        $className = substr(trim($_POST['class_name'] ?? ''), 0, 50);
-        $reason = substr(trim($_POST['reason'] ?? ''), 0, 500);
-        $date = $_POST['late_date'] ?? '';
+    $studentName = trim($_POST['student_name'] ?? '');
+    $text = trim($_POST['text'] ?? '');
+    $date = $_POST['late_date'] ?? date('Y-m-d');
 
-        if (!$studentName || !$date) {
-            echo "Заполните обязательные поля";
-            return;
-        }
+    if (!$studentName) {
+        echo "Введите имя";
+        return;
+    }
 
-        $model = new LateRecord();
+    $model = new LateRecord();
 
-        $model->create(
-            (int)$_SESSION['user']['school_id'],
-            $studentName,
-            $className,
-            $reason,
-            $date
-        );
+    $model->create(
+        (int)$_SESSION['user']['school_id'],
+        $studentName,
+        $text,
+        $date
+    );
 
-        header("Location: /late");
-        exit;
+    header("Location: /late");
+    exit;
     }
 
 
     public function autoStore()
     {
-        $this->requireAuth();
+    $this->requireAuth();
 
-        $data = json_decode(file_get_contents("php://input"), true);
+    $data = json_decode(file_get_contents("php://input"), true);
 
-        if (!is_array($data)) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid JSON']);
-            return;
-        }
+    $studentName = substr(trim($data['student_name'] ?? ''), 0, 255);
+    $text = substr(trim($data['text'] ?? ''), 0, 500);
 
-        $studentName = substr(trim($data['student_name'] ?? ''), 0, 255);
-        $text = substr(trim($data['text'] ?? ''), 0, 500);
+    if (!$studentName) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Имя не указано']);
+        return;
+    }
 
-        if (!$studentName) {
+    $model = new LateRecord();
 
-            http_response_code(400);
+    $model->create(
+        (int)$_SESSION['user']['school_id'],
+        $studentName,
+        $text,
+        date('Y-m-d')
+    );
 
-            echo json_encode([
-                'error' => 'Имя не определено'
-            ]);
-
-            return;
-        }
-
-        $model = new LateRecord();
-
-        $model->create(
-            (int)$_SESSION['user']['school_id'],
-            $studentName,
-            null,
-            $text,
-            date('Y-m-d')
-        );
-
-        echo json_encode([
-            'success' => true
-        ]);
+    echo json_encode(['success' => true]);
     }
 
 
@@ -177,37 +161,26 @@ class LateController
 
     public function update()
     {
-        $this->requireAuth();
-        $this->checkCsrf();
+    $this->requireAuth();
+    $this->checkCsrf();
 
-        $id = (int)($_POST['id'] ?? 0);
+    $id = (int)($_POST['id'] ?? 0);
 
-        if ($id <= 0) {
-            header("Location: /late");
-            exit;
-        }
+    $studentName = trim($_POST['student_name'] ?? '');
+    $text = trim($_POST['text'] ?? '');
+    $date = $_POST['late_date'] ?? date('Y-m-d');
 
-        $studentName = substr(trim($_POST['student_name'] ?? ''), 0, 255);
-        $className = substr(trim($_POST['class_name'] ?? ''), 0, 50);
-        $reason = substr(trim($_POST['reason'] ?? ''), 0, 500);
-        $date = $_POST['late_date'] ?? '';
+    $model = new LateRecord();
 
-        $model = new LateRecord();
+    $model->update(
+        $id,
+        $studentName,
+        $text,
+        $date,
+        (int)$_SESSION['user']['school_id']
+    );
 
-        $model->update(
-            $id,
-            $studentName,
-            $className,
-            $reason,
-            $date,
-            (int)$_SESSION['user']['school_id']
-        );
-
-        Logger::log(
-            "User {$_SESSION['user']['id']} updated late record #$id"
-        );
-
-        header("Location: /late");
-        exit;
+    header("Location: /late");
+    exit;
     }
 }
