@@ -4,9 +4,12 @@
 header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
 header("X-XSS-Protection: 1; mode=block");
+
 header("Referrer-Policy: no-referrer");
-header("Permissions-Policy: camera=(), microphone=(), geolocation=()");
-header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
+
+header("Permissions-Policy: camera=(self), microphone=(self)");
+
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';");
 
 // В production ошибки не показываем пользователю
 ini_set('display_errors', 0);
